@@ -1,0 +1,297 @@
+\documentclass[aps,pra,twocolumn,groupaddress,showpacs]{revtex4-1}
+\usepackage{amsmath,amssymb,graphicx,stmaryrd}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{abraces}
+
+\IfFileExists{newtxtext.sty}
+   {\usepackage{newtxtext,newtxmath}}
+   {\IfFileExists{stix.sty}
+      {\usepackage{stix}}
+      {\IfFileExists{mathptmx.sty}
+      {\usepackage{mathptmx}}{} } }
+
+\usepackage{textcomp}
+\newcommand\bmmax{2}
+\usepackage{bm}
+\usepackage{bbold}
+
+\usepackage{enumitem}
+\setlist{nolistsep}
+
+\IfFileExists{siunitx.sty}{\usepackage{booktabs,siunitx}}{}
+
+\renewcommand{\vec}[1]{\bm{#1}}
+\newcommand{\bra}[1]{\langle#1\rvert}
+\newcommand{\ket}[1]{\lvert#1\rangle}
+\newcommand{\overlap}[2]{\langle#1\vert#2\rangle}
+\newcommand{\expectation}[1]{\langle#1\rangle}
+
+\newcommand{\linkdoi}[2]{\href{http://dx.doi.org/#2}{#1}}
+\newcommand{\linkarxiv}[2]{\href{http://arxiv.org/abs/#2}{#1}}
+\newcommand{\linkisbn}[2]{\href{https://isbndb.com/book/#2}{#1}}
+\newcommand{\linkapsmeeting}[2]{\href{http://meetings.aps.org/Meeting/#2}
+{#1}}
+\newcommand{\linkhttp}[2]{\href{http://#2}{#1}}
+
+\pdfoutput=1
+\usepackage{color}
+\definecolor{LinkColor}{rgb}{0.256,0.439,0.588}
+\usepackage{hyperref}
+\hypersetup{
+   pdfauthor={K. S. D. Beach},
+   pdftitle={Managing shared physics projects with git},
+   pdfsubject={git},
+   pdfkeywords={version control system,} {command line tools,} {collaboration},
+   colorlinks=true,
+   citecolor=LinkColor,
+   linkcolor=LinkColor,
+   urlcolor=LinkColor
+   }
+
+\begin{document}
+
+\title{Managing shared physics projects with git}
+
+\author{K. S. D. Beach}
+\email[Electronic address:\ ]{kbeach@go.olemiss.edu}
+\affiliation{Department of Physics and Astronomy, The University of Mississippi, University, Mississippi 38677, USA}
+
+\begin{abstract}
+Originally developed by Linus Torvalds to organize the development of the Linux kernel, git has become a popular tool for version control and collaboration. Unlike comparable tools (e.g., subversion), it doesn't rely on a central repository or require that participants lock files during editing. Instead, the files are distributed, with each editor working from her own copy of the repository and having responsibility for merging changes when conflicts arise. Even for a single author working alone (no collaboration), git can help by tracking file changes and keeping files up-to-date across multiple computers. This is useful if you want to roll back to earlier versions of a project. And it's very convenient if you split your time between work and home computers. Git is quite efficient. Changes are stored as diffs (differences between adjacent versions of each file). And it is very flexible. The system is file-type agnostic, and is just as good at tracking a dissertation document as it is tracking source code. In this talk/workshop, I will show how to set up a repository and to carry out basic git operations from the command line. I will give examples of an integrated workflow (consistent with best practices for data provenance) that keeps source files, data, batch scripts, and manuscripts in one place.
+\end{abstract}
+
+\maketitle
+
+\section{What is git?}
+\label{SECT:What-is-git}
+
+\begin{itemize}
+\item version control system
+\item designed to track changes in code (any text files really, not just software) 
+\item created by Linus Torvalds for Linux kernel development
+\item distributed (not a client-server model)
+\item later evolved into a collaboration tool and software management system
+\end{itemize}
+
+\section{Why do people like it so much?}
+\label{SECT:Why-do-people-like-it-so-much}
+
+\begin{itemize}
+\item fast (runs locally)
+\item only sometimes requires network access
+\item flexible workflows (branching/merging, nonlinear)
+\item data integrity (complete history, file snapshots)
+\item ability to unwind changes
+\item revert to any previous version at will
+\item facilitates collaboration (workflow-agnostic)
+\end{itemize}
+
+\section{How is this different from other schemes?}
+\label{SECT:How-is-this-different-from-other-schemes}
+
+\begin{itemize}
+\item Torvals has a kernel / filesystem point of view 
+\item git = hash value file system + changes list
+\item each local repository contains all the data and a complete history of all changes
+\item no checkout or exclusion via locks
+\item merging resolved by hand if it cannot be done algorithmically
+\item git stores entire snapshots so files never need to be assembled (but eventually builds ``packs'' of binary diffs for old commits to save space)
+\item non-restrictive licence
+\end{itemize}
+
+\begin{thebibliography}{99}
+
+\bibitem{Bravyi-PRL-12} Sergey Bravyi, Libor Caha, 
+Ramis Movassagh, Daniel Nagaj, and Peter W. Shor,
+Criticality without Frustration for Quantum Spin-1 Chains,
+\linkdoi{Physical Review Letters {\bf 109}, 207202 (2012)}
+{10.1103/PhysRevLett.109.207202}.
+
+\bibitem{Movassagh-PNAS-16}
+Ramis Movassagh and Peter W. Shor, 
+Supercritical entanglement in local systems: Counterexample to the area law for quantum matter,
+\linkdoi{Proceedings of the National Academy of Sciences {\bf 113}, 13278--13282 (2016)}
+{10.1073/pnas.1605716113}.
+
+\bibitem{Donaghey-JCT-77}
+R. Donaghey and L. W. Shapiro,
+Motzkin numbers,
+\linkdoi{Journal of Combinatorial Theory, Series A {\bf 23}, 291--301 (1977)}
+{10.1016/0097-3165(77)90020-6}.
+
+\bibitem{Kivelson-PRB-87}
+S.A. Kivelson, D.S. Rokhsar, and J.P. Sethna,
+Topology of the resonating valence-bond state: Solitons and high-$T_c$ superconductivity,
+\linkdoi{Physical Review B {\bf 35}, 8865(R) (1987)}
+{10.1103/PhysRevB.35.8865}.
+
+\bibitem{Rokhsar-PRL-88}
+Daniel S. Rokhsar and Steven A. Kivelson,
+Superconductivity and the Quantum Hard-Core Dimer Gas,
+\linkdoi{Physical Review Letters {\bf 61}, 2376 (1988)}
+{10.1103/PhysRevLett.61.2376}.
+
+\bibitem{Movassagh-JMP-17}
+Ramis Movassagh,
+Entanglement and correlation functions of the quantum Motzkin spin-chain,
+\linkdoi{Journal of Mathematical Physics {\bf 58}, 031901 (2017)}
+{10.1063/1.4977829}.
+
+\bibitem{Majumdar-JMP-69}
+C. K. Majumdar and D. Ghosh, 
+On Next-Nearest-Neighbor Interaction in Linear Chain,
+\linkdoi{Journal of Mathematical Physics {\bf 10}, 1388 (1969)}
+{10.1063/1.1664978}.
+
+\bibitem{Affleck-PRL-87}
+I. Affleck, T. Kennedy, E. H. Lieb, and H. Tasaki,
+Rigorous results on valence-bond ground states in antiferromagnets,
+\linkdoi{Physical Review Letters {\bf 59}, 799 (1987)}
+{10.1103/PhysRevLett.59.799}.
+
+\bibitem{DellAnna-PRB-16}
+L. Dell'Anna, O. Salberger,  L. Barbiero, A. Trombettoni, and V. E. Korepin,
+Violation of cluster decomposition and absence of light cones in local integer and half-integer spin chains,
+\linkdoi{Physical Review B {\bf 94}, 155140 (2016)}
+{10.1103/PhysRevB.94.155140}.
+
+\bibitem{Chen-PRB-17}
+Xiao Chen, Eduardo Fradkin, and William Witczak-Krempa,
+Quantum spin chains with multiple dynamics,
+\linkdoi{Physical Review B {\bf 96}, 180402(R) (2017)}
+{10.1103/PhysRevB.96.180402}.
+
+\bibitem{Chen-JPA-17}
+Xiao Chen, Eduardo Fradkin, and William Witczak-Krempa,
+Gapless quantum spin chains: multiple dynamics and conformal wavefunctions,
+\linkdoi{Journal of Physics A: Mathematical and Theoretical {\bf 50}, 464002 (2017)}
+{10.1088/1751-8121/aa8dbc}.
+
+\bibitem{Eisert-RMP-10}
+J. Eisert, M. Cramer, and M. B. Plenio,
+Colloquium: Area laws for the entanglement entropy,
+\linkdoi{Reviews of Modern Physics {\bf 82}, 277 (2010)}
+{10.1103/RevModPhys.82.277}.
+
+\bibitem{Zhang-PNAS-17}
+Zhao Zhang, Amr Ahmadain, and Israel Klich,
+Novel quantum phase transition from bounded to extensive entanglement,
+\linkdoi{Proceedings of the National Academy of Sciences {\bf 114}, 5142--5146 (2017)}
+{10.1073/pnas.1702029114}.
+
+\bibitem{Zhang-JPA-17}
+Zhao Zhang and Israel Klich,
+Entropy, gap and a multi-parameter deformation of the Fredkin spin chain,
+\linkdoi{Journal of Physics A: Mathemtical and Theoretical {\bf 50}, 425201 (2017)}
+{10.1088/1751-8121/aa866e}.
+
+\bibitem{Ramirez-JSM-15}
+Giovanni Ram\'irez, Javier Rodr\'iguez-Laguna, and Germ\'an Sierra,
+Entanglement over the rainbow,
+\linkdoi{Journal of Statistical Mechanics: Theory and Experiment
+{\bf P06002} (2015)}
+{10.1088/1742-5468/2015/06/P06002}.
+
+\bibitem{Levine-JPA-17}
+Lionel Levine and Ramis Movassagh,
+The gap of the area-weighted Motzkin spin chain is exponentially small,
+Lionel Levine and Ramis Movassagh,
+\linkdoi{Journal of Physics A: Mathematical and Theoretical
+{\bf 50}, 255302 (2017)}
+{10.1088/1751-8121/aa6cc4}.
+
+\bibitem{Salberger-arXiv-16}
+Olof Salberger and Vladimir Korepin,
+Fredkin Spin Chain,
+\linkarxiv{arXiv:1605.03842v1 (2016)}
+{1605.03842}; 
+Entangled spin chain,'
+\linkdoi{Reviews in Mathematical Physics {\bf 29}, 1750031 (2017)}
+{10.1142/S0129055X17500313}.
+
+\bibitem{Udagawa-JPA-17}
+T. Udagawa and H. Katsura, 
+Finite-size gap, magnetization, and entanglement of deformed Fredkin spin chain,
+\linkdoi{Journal of Physics A: Mathematical and Theoretical {\bf 50}, 405002 (2017)}
+{10.1088/1751-8121/aa85b5}.
+
+\bibitem{Padmanabhan-arXiv-18}
+Pramod Padmanabhan, Fumihiko Sugino, and Vladimir Korepin,
+Quantum Phase Transitions and Localization in Semigroup Fredkin Spin Chain,
+\linkarxiv{arXiv:1804.00978v1 (2018)}{1804.00978}.
+
+\bibitem{Adhikari-APS-17}
+Khagendra Adhikari and K. S. D. Beach,
+Deforming the Fredkin spin chain away from its frustration-free point,
+\linkapsmeeting{APS March Meeting {\bf X20.10} (2017)}
+{MAR17/Session/X20.10}.
+
+\bibitem{comment1}
+The Fredkin model Hamiltonian breaks the Hilbert space into disjoint regions defined by a common number of mismatches from balanced, nested form.
+
+\bibitem{comment2}
+Away from the chain edges, the terms in Eq.~\eqref{EQ:bulk_hamiltonian} can be
+regrouped as $\sum_i(U_{i-1} + D_{i+2})P_{i,i+1}$; this suggests
+interpreting the Hamiltonian as a correlated Heisenberg model in which the ferromagnetic exchange coupling is sensitive to the configuration of neighboring spins. In contrast to the case of the conventional Heisenberg model, the privileging of the z direction in operators $U$ and $D$ reduces the global spin symmetry from SU(2) to U(1).
+
+\bibitem{Jorg-Springer-11}
+J\"org Arndt, {\it Matters Computational: Ideas, Algorithms, Source Code},
+\linkdoi{Springer, Berlin, Heidelberg (2011)}{10.1007/978-3-642-14764-7}.
+
+\bibitem{Knuth-Addison-97}
+Donald E. Knuth, {\it Art of Computer Programming, Volume 2: Seminumerical Algorithms}, 3rd Edition, \linkisbn{Addison-Wesley, Boston (1997)}{9780201896848}.
+%ISBN-10: 0201896842
+%ISBN-13: 978-0201896848
+
+\bibitem{Mermin-PRL-66}
+N. D. Mermin and H. Wagner,
+Absence of Ferromagnetism or Antiferromagnetism in One- or Two-Dimensional Isotropic Heisenberg Models,
+\linkdoi{Physical Review Letters {\bf 17}, 1133 (1966)}
+{10.1103/PhysRevLett.17.1133}; [\linkdoi{{\bf 17}, 1307(E) (1966)}
+{10.1103/PhysRevLett.17.1307}].
+
+\bibitem{Hohenberg-PR-67}
+P. C. Hohenberg,
+Existence of Long-Range Order in One and Two Dimensions,
+\linkdoi{Physical Review {\bf 158}, 383 (1967)}
+{10.1103/PhysRev.158.383}.
+
+\bibitem{Adhikari-APS-18}
+Khagendra Adhikari and K. S. D. Beach,
+A tunable quantum spin chain with three-body interactions,
+\linkapsmeeting{APS March Meeting {\bf H19.10} (2018)}
+{MAR18/Session/H19.10}.
+
+\bibitem{Spivak-PRB-04}
+Boris Spivak and Steven A. Kivelson,
+Phases intermediate between a two-dimensional electron liquid and Wigner crystal,
+\linkdoi{Physical Review B {\bf 70}, 155114 (2004)}
+{10.1103/PhysRevB.70.155114}.
+
+\bibitem{Jamei-PRL-05}
+Reza Jamei, Steven Kivelson, and Boris Spivak,
+Universal Aspects of Coulomb-Frustrated Phase Separation,
+\linkdoi{Physical Review Letters {\bf 94}, 056805 (2005)}
+{10.1103/PhysRevLett.94.056805}.
+
+\bibitem{ITensor}
+DMRG calculations were performed using the \linkhttp{ITensor}{itensor.org} C++ library, developed by E. Miles Stoudenmire and Steven R. White.
+
+\bibitem{Movassagh-AMSA-18}
+Ramis Movassagh,
+The gap of Fredkin quantum spin chain is polynomially small,
+\linkdoi{in Annals of Mathematical Sciences and Applications {\bf 3}, 531 (2018)}
+{10.4310/AMSA.2018.v3.n2.a5}.
+
+\bibitem{Hastings-JSATA-07}
+M. B. Hastings,
+An Area Law for One Dimensional Quantum Systems,
+\linkdoi{Journal of Statistical Mechanics: Theory and Experiment {\bf P08024} (2007)}
+{10.1088/1742-5468/2007/08/P08024}.
+
+\end{thebibliography}
+
+
+\end{document}
