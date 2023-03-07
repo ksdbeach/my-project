@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
    if (argc == 1 or (argc == 2 and strcmp(argv[1],"-h") == 0))
    {
       cerr << usagetext << endl;
-      exit(0);
+      exit(1);
    }
    
    extern char *optarg;
